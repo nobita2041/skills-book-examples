@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>製造週報</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: #f5f7fa;
+      color: #2d3748;
+      line-height: 1.8;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a365d, #2b6cb0);
+      color: #ffffff;
+      padding: 32px 40px;
+    }
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 24px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .content {
+      padding: 32px 40px;
+    }
+
+    /* KPIカード */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .kpi-card {
+      background: #f7fafc;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      border-left: 4px solid #cbd5e0;
+      transition: transform 0.2s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); }
+    .kpi-card.green { border-left-color: #38a169; }
+    .kpi-card.yellow { border-left-color: #d69e2e; }
+    .kpi-card.red { border-left-color: #e53e3e; }
+    .kpi-label {
+      font-size: 12px;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .kpi-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2d3748;
+    }
+    .kpi-card.green .kpi-value { color: #276749; }
+    .kpi-card.yellow .kpi-value { color: #975a16; }
+    .kpi-card.red .kpi-value { color: #c53030; }
+    .kpi-unit {
+      font-size: 14px;
+      color: #a0aec0;
+    }
+
+    /* グラフ */
+    .chart-section {
+      margin-bottom: 32px;
+    }
+    .chart-container {
+      background: #f7fafc;
+      border-radius: 8px;
+      padding: 24px;
+    }
+    .chart-wrapper {
+      position: relative;
+      height: 300px;
+    }
+
+    /* セクション */
+    .section {
+      margin-bottom: 28px;
+    }
+    .section h2 {
+      font-size: 18px;
+      color: #1a365d;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .section-content {
+      font-size: 15px;
+      white-space: pre-line;
+    }
+
+    /* フッター */
+    .footer {
+      background: #f7fafc;
+      padding: 16px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #a0aec0;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 768px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .header-meta { flex-direction: column; gap: 4px; }
+      .content { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <div class="header">
+      <h1 id="reportTitle">製造週報</h1>
+      <div class="header-meta">
+        <span id="reportPeriod">対象期間: </span>
+        <span id="reportRecipient">宛先: </span>
+        <span id="reportDate">作成日: </span>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- KPIサマリー -->
+      <div class="kpi-grid">
+        <div class="kpi-card" id="kpiProduction">
+          <div class="kpi-label">合計生産数</div>
+          <div class="kpi-value" id="kpiProductionValue">-</div>
+          <div class="kpi-unit">個</div>
+        </div>
+        <div class="kpi-card" id="kpiDefect">
+          <div class="kpi-label">不良率</div>
+          <div class="kpi-value" id="kpiDefectValue">-</div>
+          <div class="kpi-unit">%</div>
+        </div>
+        <div class="kpi-card" id="kpiOperating">
+          <div class="kpi-label">設備稼働率</div>
+          <div class="kpi-value" id="kpiOperatingValue">-</div>
+          <div class="kpi-unit">%</div>
+        </div>
+        <div class="kpi-card" id="kpiAchievement">
+          <div class="kpi-label">計画達成率</div>
+          <div class="kpi-value" id="kpiAchievementValue">-</div>
+          <div class="kpi-unit">%</div>
+        </div>
+      </div>
+
+      <!-- グラフ: 計画 vs 実績 -->
+      <div class="chart-section">
+        <div class="chart-container">
+          <div class="chart-wrapper">
+            <canvas id="productionChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4セクション -->
+      <div class="section">
+        <h2>1. 今週の生産実績・成果</h2>
+        <div class="section-content" id="sectionResults"></div>
+      </div>
+      <div class="section">
+        <h2>2. 設備・安全</h2>
+        <div class="section-content" id="sectionSafety"></div>
+      </div>
+      <div class="section">
+        <h2>3. 来週の予定</h2>
+        <div class="section-content" id="sectionNextWeek"></div>
+      </div>
+      <div class="section">
+        <h2>4. 課題・懸念事項</h2>
+        <div class="section-content" id="sectionIssues"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      この週報は weekly-report スキルにより自動生成されました
+    </div>
+  </div>
+
+  <script>
+    // ========================================
+    // データ定義（Claudeがこの部分を置換します）
+    // ========================================
+    /* DATA_PLACEHOLDER */
+    const reportData = {
+      title: "製造週報",
+      period: "2026年2月10日〜2月14日",
+      author: "製造課 佐藤",
+      recipient: "製造部 山田部長",
+      createdDate: "2026-02-14",
+      kpi: {
+        totalProduction: 5200,
+        defectRate: 1.2,
+        operatingRate: 94.5,
+        achievementRate: 98.1
+      },
+      products: [
+        { name: "製品A", planned: 2000, actual: 1980, defects: 20 },
+        { name: "製品B", planned: 1500, actual: 1520, defects: 15 },
+        { name: "製品C", planned: 1800, actual: 1700, defects: 30 }
+      ],
+      sections: {
+        results: "・製品A: 計画2,000個に対し1,980個を生産（達成率 99.0%）。不良率 1.0%で安定推移。\n・製品B: 計画1,500個に対し1,520個を生産（達成率 101.3%）。前週比+5%の増産に成功。\n・製品C: 計画1,800個に対し1,700個を生産（達成率 94.4%）。木曜の設備調整により半日のロス発生。",
+        safety: "・設備稼働率: 94.5%（前週比 -1.2ポイント）。\n・木曜にライン3のベルトコンベア調整を実施（計画メンテナンス）。\n・ヒヤリハット: 1件（フォークリフト動線での接触未遂）。対策として動線マーキングを追加。",
+        nextWeek: "・製品Aの増産体制（2,200個/週）への切り替え準備。\n・ライン2の定期メンテナンス（水曜午前）。\n・新規製品Dの試作ライン立ち上げ（金曜）。",
+        issues: "・製品Cの計画未達が2週連続。ライン3の老朽化が主因であり、設備更新の検討が必要。\n・原材料Xの納入遅延リスク（サプライヤーから1週間遅延の連絡あり）。\n・新人オペレーター2名の習熟度向上が必要（現在、標準作業時間の120%）。"
+      }
+    };
+    /* DATA_PLACEHOLDER_END */
+
+    // ========================================
+    // レンダリング
+    // ========================================
+
+    // ヘッダー
+    document.getElementById("reportTitle").textContent = reportData.title;
+    document.getElementById("reportPeriod").textContent = "対象期間: " + reportData.period;
+    document.getElementById("reportRecipient").textContent = "宛先: " + reportData.recipient;
+    document.getElementById("reportDate").textContent = "作成日: " + reportData.createdDate;
+
+    // KPIカード
+    // 合計生産数（色分けなし→常に緑）
+    const prodCard = document.getElementById("kpiProduction");
+    document.getElementById("kpiProductionValue").textContent = reportData.kpi.totalProduction.toLocaleString();
+    prodCard.classList.add("green");
+
+    // 不良率: 1%未満→緑、1-2%→黄、2%超→赤
+    const defectCard = document.getElementById("kpiDefect");
+    document.getElementById("kpiDefectValue").textContent = reportData.kpi.defectRate.toFixed(1);
+    if (reportData.kpi.defectRate < 1) defectCard.classList.add("green");
+    else if (reportData.kpi.defectRate <= 2) defectCard.classList.add("yellow");
+    else defectCard.classList.add("red");
+
+    // 稼働率: 95%以上→緑、90-95%→黄、90%未満→赤
+    const opCard = document.getElementById("kpiOperating");
+    document.getElementById("kpiOperatingValue").textContent = reportData.kpi.operatingRate.toFixed(1);
+    if (reportData.kpi.operatingRate >= 95) opCard.classList.add("green");
+    else if (reportData.kpi.operatingRate >= 90) opCard.classList.add("yellow");
+    else opCard.classList.add("red");
+
+    // 達成率: 98%以上→緑、95-98%→黄、95%未満→赤
+    const achCard = document.getElementById("kpiAchievement");
+    document.getElementById("kpiAchievementValue").textContent = reportData.kpi.achievementRate.toFixed(1);
+    if (reportData.kpi.achievementRate >= 98) achCard.classList.add("green");
+    else if (reportData.kpi.achievementRate >= 95) achCard.classList.add("yellow");
+    else achCard.classList.add("red");
+
+    // セクション本文
+    document.getElementById("sectionResults").textContent = reportData.sections.results;
+    document.getElementById("sectionSafety").textContent = reportData.sections.safety;
+    document.getElementById("sectionNextWeek").textContent = reportData.sections.nextWeek;
+    document.getElementById("sectionIssues").textContent = reportData.sections.issues;
+
+    // グラフ: 製品別 計画 vs 実績
+    const ctx = document.getElementById("productionChart").getContext("2d");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: reportData.products.map(p => p.name),
+        datasets: [
+          {
+            label: "計画",
+            data: reportData.products.map(p => p.planned),
+            backgroundColor: "rgba(66, 153, 225, 0.6)",
+            borderColor: "rgba(66, 153, 225, 1)",
+            borderWidth: 1
+          },
+          {
+            label: "実績",
+            data: reportData.products.map(p => p.actual),
+            backgroundColor: "rgba(72, 187, 120, 0.6)",
+            borderColor: "rgba(72, 187, 120, 1)",
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: "製品別 計画 vs 実績",
+            font: { size: 16 }
+          },
+          legend: {
+            position: "top"
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "生産数（個）"
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
