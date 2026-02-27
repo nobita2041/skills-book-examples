@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>田中太郎 - フリーランスエンジニア</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* ヘッダー */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        nav ul li a:hover {
+            opacity: 0.8;
+        }
+
+        /* ハンバーガーメニュー */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 150px 20px 100px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .hero .btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .hero .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* セクション共通 */
+        section {
+            padding: 80px 20px;
+        }
+
+        section h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 自己紹介 */
+        .about {
+            background: #f9f9f9;
+        }
+
+        .about-content {
+            display: flex;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .about-text p {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        /* スキル */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .skill-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .skill-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .skill-card h3 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .skill-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .skill-bar-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        /* 実績 */
+        .works {
+            background: #f9f9f9;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .work-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+
+        .work-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .work-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .work-info {
+            padding: 20px;
+        }
+
+        .work-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .work-info p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .work-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .work-tags span {
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        /* お客様の声 */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            font-size: 4rem;
+            color: #667eea;
+            opacity: 0.3;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-family: Georgia, serif;
+        }
+
+        .testimonial-card p {
+            font-style: italic;
+            margin-bottom: 15px;
+            padding-top: 20px;
+        }
+
+        .testimonial-card .author {
+            font-weight: bold;
+            color: #667eea;
+            font-style: normal;
+        }
+
+        /* お問い合わせ */
+        .contact {
+            background: #f9f9f9;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* フッター */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        footer .social-links {
+            margin-bottom: 15px;
+        }
+
+        footer .social-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.1rem;
+            transition: opacity 0.3s;
+        }
+
+        footer .social-links a:hover {
+            opacity: 0.7;
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .about-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .about-image {
+                width: 150px;
+                height: 150px;
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ヘッダー -->
+    <header>
+        <nav>
+            <div class="logo">T.Tanaka</div>
+            <ul>
+                <li><a href="#about">自己紹介</a></li>
+                <li><a href="#skills">スキル</a></li>
+                <li><a href="#works">実績</a></li>
+                <li><a href="#testimonials">お客様の声</a></li>
+                <li><a href="#contact">お問い合わせ</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ヒーロー -->
+    <section class="hero">
+        <h1>田中太郎</h1>
+        <p>フリーランス フルスタックエンジニア</p>
+        <p>Webアプリケーション開発・クラウドインフラ構築をお手伝いします</p>
+        <a href="#contact" class="btn">お問い合わせはこちら</a>
+    </section>
+
+    <!-- 自己紹介 -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2>自己紹介</h2>
+            <div class="about-content">
+                <div class="about-image">T</div>
+                <div class="about-text">
+                    <p>はじめまして、田中太郎です。フリーランスのフルスタックエンジニアとして活動しています。</p>
+                    <p>大手SIerで5年間の経験を積んだ後、2020年に独立しました。Webアプリケーション開発を中心に、フロントエンドからバックエンド、クラウドインフラまで幅広く対応しています。</p>
+                    <p>お客様のビジネス課題を技術で解決することをモットーに、丁寧なコミュニケーションと高品質な開発を心がけています。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- スキル -->
+    <section id="skills">
+        <div class="container">
+            <h2>スキル</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="icon">&#128187;</div>
+                    <h3>フロントエンド</h3>
+                    <p>React / Next.js / TypeScript / HTML / CSS</p>
+                    <div class="skill-bar"><div class="skill-bar-fill" style="width: 90%"></div></div>
+                </div>
+                <div class="skill-card">
+                    <div class="icon">&#9881;</div>
+                    <h3>バックエンド</h3>
+                    <p>Node.js / Python / Go / REST API / GraphQL</p>
+                    <div class="skill-bar"><div class="skill-bar-fill" style="width: 85%"></div></div>
+                </div>
+                <div class="skill-card">
+                    <div class="icon">&#9729;</div>
+                    <h3>クラウド・インフラ</h3>
+                    <p>AWS / GCP / Docker / Kubernetes / Terraform</p>
+                    <div class="skill-bar"><div class="skill-bar-fill" style="width: 80%"></div></div>
+                </div>
+                <div class="skill-card">
+                    <div class="icon">&#128202;</div>
+                    <h3>データベース</h3>
+                    <p>PostgreSQL / MySQL / MongoDB / Redis</p>
+                    <div class="skill-bar"><div class="skill-bar-fill" style="width: 75%"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 実績 -->
+    <section class="works" id="works">
+        <div class="container">
+            <h2>実績</h2>
+            <div class="works-grid">
+                <div class="work-card">
+                    <div class="work-image">ECサイト</div>
+                    <div class="work-info">
+                        <h3>ECサイト構築</h3>
+                        <p>大手アパレルブランドのECサイトをNext.jsとStripeで構築。月間10万PVを達成。</p>
+                        <div class="work-tags">
+                            <span>Next.js</span>
+                            <span>Stripe</span>
+                            <span>AWS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card">
+                    <div class="work-image">SaaS管理画面</div>
+                    <div class="work-info">
+                        <h3>SaaS管理画面開発</h3>
+                        <p>BtoB向けSaaSプロダクトの管理画面をReact + TypeScriptで開発。</p>
+                        <div class="work-tags">
+                            <span>React</span>
+                            <span>TypeScript</span>
+                            <span>GraphQL</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card">
+                    <div class="work-image">API基盤</div>
+                    <div class="work-info">
+                        <h3>マイクロサービス基盤</h3>
+                        <p>レガシーシステムをマイクロサービスアーキテクチャに移行。処理速度を3倍に改善。</p>
+                        <div class="work-tags">
+                            <span>Go</span>
+                            <span>Kubernetes</span>
+                            <span>gRPC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- お客様の声 -->
+    <section id="testimonials">
+        <div class="container">
+            <h2>お客様の声</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p>要件定義から丁寧にヒアリングしていただき、期待以上のクオリティで納品していただきました。</p>
+                    <div class="author">株式会社A 佐藤様</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>技術的な提案力が高く、コスト削減につながる構成を提案していただけました。今後もお願いしたいです。</p>
+                    <div class="author">株式会社B 鈴木様</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>レスポンスが早く、コミュニケーションがスムーズでした。短期間で高品質なシステムが完成しました。</p>
+                    <div class="author">株式会社C 山田様</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- お問い合わせ -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2>お問い合わせ</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label>お名前</label>
+                    <input type="text" placeholder="山田太郎">
+                </div>
+                <div class="form-group">
+                    <label>メールアドレス</label>
+                    <input type="email" placeholder="example@email.com">
+                </div>
+                <div class="form-group">
+                    <label>件名</label>
+                    <input type="text" placeholder="お問い合わせの件名">
+                </div>
+                <div class="form-group">
+                    <label>メッセージ</label>
+                    <textarea placeholder="お問い合わせ内容をご記入ください"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">送信する</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer>
+        <div class="social-links">
+            <a href="#">GitHub</a>
+            <a href="#">Twitter</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">Qiita</a>
+        </div>
+        <p>&copy; 2024 田中太郎 All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // スムーズスクロール
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ハンバーガーメニュー
+        function toggleMenu() {
+            const nav = document.querySelector('nav ul');
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+        }
+    </script>
+
+</body>
+</html>

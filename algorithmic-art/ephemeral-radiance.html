@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ephemeral Radiance - Fireworks</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --anthropic-dark: #141413;
+            --anthropic-light: #faf9f5;
+            --anthropic-mid-gray: #b0aea5;
+            --anthropic-light-gray: #e8e6dc;
+            --anthropic-orange: #d97757;
+            --anthropic-blue: #6a9bcc;
+            --anthropic-green: #788c5d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--anthropic-light) 0%, #f5f3ee 100%);
+            min-height: 100vh;
+            color: var(--anthropic-dark);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(20, 20, 19, 0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar h1 {
+            font-family: 'Lora', serif;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+
+        .sidebar .subtitle {
+            color: var(--anthropic-mid-gray);
+            font-size: 14px;
+            margin-bottom: 32px;
+            line-height: 1.4;
+        }
+
+        .control-section { margin-bottom: 32px; }
+
+        .control-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--anthropic-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-section h3::before {
+            content: '\2022';
+            color: var(--anthropic-orange);
+            font-weight: bold;
+        }
+
+        .seed-input {
+            width: 100%;
+            background: var(--anthropic-light);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 12px;
+            border: 1px solid var(--anthropic-light-gray);
+            text-align: center;
+        }
+
+        .seed-input:focus {
+            outline: none;
+            border-color: var(--anthropic-orange);
+            box-shadow: 0 0 0 2px rgba(217, 119, 87, 0.1);
+            background: white;
+        }
+
+        .seed-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .regen-button { margin-bottom: 0; }
+
+        .control-group { margin-bottom: 20px; }
+
+        .control-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 4px;
+            background: var(--anthropic-light-gray);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--anthropic-orange);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: #c86641;
+        }
+
+        .slider-container input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--anthropic-orange);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .value-display {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .color-group { margin-bottom: 16px; }
+
+        .color-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+            margin-bottom: 4px;
+        }
+
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-picker-container input[type="color"] {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+        }
+
+        .color-value {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+        }
+
+        .button {
+            background: var(--anthropic-orange);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .button:hover {
+            background: #c86641;
+            transform: translateY(-1px);
+        }
+
+        .button:active { transform: translateY(0); }
+
+        .button.secondary { background: var(--anthropic-blue); }
+        .button.secondary:hover { background: #5a8bb8; }
+        .button.tertiary { background: var(--anthropic-green); }
+        .button.tertiary:hover { background: #6b7b52; }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .button-row .button { flex: 1; }
+
+        .canvas-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        #canvas-container {
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(20, 20, 19, 0.1);
+            background: #08081a;
+        }
+
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--anthropic-mid-gray);
+            padding: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Ephemeral Radiance</h1>
+            <div class="subtitle">Pyrotechnic particle physics &mdash; explosive light against infinite darkness</div>
+
+            <!-- Seed Section (FIXED) -->
+            <div class="control-section">
+                <h3>Seed</h3>
+                <input type="number" id="seed-input" class="seed-input" value="12345" onchange="updateSeed()">
+                <div class="seed-controls">
+                    <button class="button secondary" onclick="previousSeed()">&larr; Prev</button>
+                    <button class="button secondary" onclick="nextSeed()">Next &rarr;</button>
+                </div>
+                <button class="button tertiary regen-button" onclick="randomSeedAndUpdate()">&#8635; Random</button>
+            </div>
+
+            <!-- Parameters Section -->
+            <div class="control-section">
+                <h3>Parameters</h3>
+
+                <div class="control-group">
+                    <label>Launch Rate</label>
+                    <div class="slider-container">
+                        <input type="range" id="launchRate" min="1" max="8" step="1" value="4" oninput="updateParam('launchRate', this.value)">
+                        <span class="value-display" id="launchRate-value">4</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Burst Size</label>
+                    <div class="slider-container">
+                        <input type="range" id="burstSize" min="50" max="250" step="10" value="120" oninput="updateParam('burstSize', this.value)">
+                        <span class="value-display" id="burstSize-value">120</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Gravity</label>
+                    <div class="slider-container">
+                        <input type="range" id="gravity" min="0.02" max="0.15" step="0.01" value="0.06" oninput="updateParam('gravity', this.value)">
+                        <span class="value-display" id="gravity-value">0.06</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Trail Fade</label>
+                    <div class="slider-container">
+                        <input type="range" id="trailFade" min="8" max="50" step="2" value="22" oninput="updateParam('trailFade', this.value)">
+                        <span class="value-display" id="trailFade-value">22</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Wind</label>
+                    <div class="slider-container">
+                        <input type="range" id="wind" min="-2" max="2" step="0.1" value="0" oninput="updateParam('wind', this.value)">
+                        <span class="value-display" id="wind-value">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colors Section -->
+            <div class="control-section">
+                <h3>Colors</h3>
+
+                <div class="color-group">
+                    <label>Color 1</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color1" value="#FF1744" onchange="updateColor(0, this.value)">
+                        <span class="color-value" id="color1-value">#FF1744</span>
+                    </div>
+                </div>
+
+                <div class="color-group">
+                    <label>Color 2</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color2" value="#FFB300" onchange="updateColor(1, this.value)">
+                        <span class="color-value" id="color2-value">#FFB300</span>
+                    </div>
+                </div>
+
+                <div class="color-group">
+                    <label>Color 3</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color3" value="#2979FF" onchange="updateColor(2, this.value)">
+                        <span class="color-value" id="color3-value">#2979FF</span>
+                    </div>
+                </div>
+
+                <div class="color-group">
+                    <label>Color 4</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color4" value="#00E676" onchange="updateColor(3, this.value)">
+                        <span class="color-value" id="color4-value">#00E676</span>
+                    </div>
+                </div>
+
+                <div class="color-group">
+                    <label>Color 5</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color5" value="#D500F9" onchange="updateColor(4, this.value)">
+                        <span class="color-value" id="color5-value">#D500F9</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Section (FIXED) -->
+            <div class="control-section">
+                <h3>Actions</h3>
+                <div class="button-row" style="margin-bottom: 8px;">
+                    <button class="button" onclick="resetParameters()">Reset</button>
+                </div>
+                <div class="button-row">
+                    <button class="button secondary" onclick="downloadPNG()">Download PNG</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-area">
+            <div id="canvas-container">
+                <div class="loading">Igniting fireworks...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        // DETERMINISTIC PRNG (Mulberry32) - per-firework seed isolation
+        // ═══════════════════════════════════════════════════════════════
+        function mulberry32(a) {
+            return function() {
+                var t = a += 0x6D2B79F5;
+                t = Math.imul(t ^ t >>> 15, t | 1);
+                t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function hexToRgb(hex) {
+            const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return r ? {
+                r: parseInt(r[1], 16),
+                g: parseInt(r[2], 16),
+                b: parseInt(r[3], 16)
+            } : { r: 255, g: 255, b: 255 };
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // PARAMETERS
+        // ═══════════════════════════════════════════════════════════════
+        let params = {
+            seed: 12345,
+            launchRate: 4,
+            burstSize: 120,
+            gravity: 0.06,
+            trailFade: 22,
+            wind: 0,
+            colorPalette: ['#FF1744', '#FFB300', '#2979FF', '#00E676', '#D500F9']
+        };
+
+        let defaultParams = JSON.parse(JSON.stringify(params));
+
+        // ═══════════════════════════════════════════════════════════════
+        // STATE
+        // ═══════════════════════════════════════════════════════════════
+        let schedule = [];
+        let scheduleIdx = 0;
+        let activeFireworks = [];
+        let stars = [];
+        let fc = 0;
+        let totalDuration = 720; // ~12 seconds at 60fps
+
+        // ═══════════════════════════════════════════════════════════════
+        // P5.JS SETUP & DRAW
+        // ═══════════════════════════════════════════════════════════════
+        function setup() {
+            let canvas = createCanvas(1200, 1200);
+            canvas.parent('canvas-container');
+            document.querySelector('.loading').style.display = 'none';
+            initializeSystem();
+        }
+
+        function initializeSystem() {
+            randomSeed(params.seed);
+            noiseSeed(params.seed);
+
+            activeFireworks = [];
+            scheduleIdx = 0;
+            fc = 0;
+
+            // Stars
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: random(width),
+                    y: random(height * 0.75),
+                    size: random(0.8, 2.2),
+                    phase: random(TWO_PI),
+                    speed: random(0.015, 0.055)
+                });
+            }
+
+            // Launch schedule
+            schedule = [];
+            let numLaunches = Math.max(8, Math.floor(params.launchRate * 10));
+
+            for (let i = 0; i < numLaunches; i++) {
+                let launchFrame = Math.floor(random(15, totalDuration - 100));
+                schedule.push({
+                    frame: launchFrame,
+                    x: random(width * 0.12, width * 0.88),
+                    targetY: random(height * 0.1, height * 0.48),
+                    colorIndex: Math.floor(random(params.colorPalette.length)),
+                    burstType: Math.floor(random(5)),
+                    sizeMultiplier: random(0.7, 1.4),
+                    localSeed: Math.floor(random(999999))
+                });
+            }
+            schedule.sort((a, b) => a.frame - b.frame);
+
+            background(8, 8, 26);
+        }
+
+        function draw() {
+            // Trail fade overlay
+            noStroke();
+            fill(8, 8, 26, params.trailFade);
+            rect(0, 0, width, height);
+
+            // Twinkling stars
+            drawStars();
+
+            // Launch fireworks from schedule
+            while (scheduleIdx < schedule.length && schedule[scheduleIdx].frame <= fc) {
+                let s = schedule[scheduleIdx];
+                activeFireworks.push(new Firework(s));
+                scheduleIdx++;
+            }
+
+            // Update & render fireworks
+            for (let i = activeFireworks.length - 1; i >= 0; i--) {
+                activeFireworks[i].update();
+                activeFireworks[i].display();
+                if (activeFireworks[i].isDone()) {
+                    activeFireworks.splice(i, 1);
+                }
+            }
+
+            fc++;
+
+            // Loop: restart when show ends
+            if (fc > totalDuration + 180 && activeFireworks.length === 0) {
+                initializeSystem();
+            }
+        }
+
+        function drawStars() {
+            noStroke();
+            for (let s of stars) {
+                let b = 120 + 135 * Math.sin(fc * s.speed + s.phase);
+                fill(255, 255, 230, b);
+                circle(s.x, s.y, s.size);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // FIREWORK CLASS
+        // ═══════════════════════════════════════════════════════════════
+        class Firework {
+            constructor(config) {
+                this.rng = mulberry32(config.localSeed);
+                this.x = config.x;
+                this.targetY = config.targetY;
+                this.burstColor = params.colorPalette[config.colorIndex % params.colorPalette.length];
+                this.burstType = config.burstType;
+                this.sizeMul = config.sizeMultiplier;
+
+                // Rocket
+                this.rPos = createVector(this.x, height + 10);
+                let dist = height + 10 - this.targetY;
+                let speed = Math.sqrt(2 * params.gravity * dist) * 1.08;
+                this.rVel = createVector((this.rng() - 0.5) * 0.6, -speed);
+                this.rTrail = [];
+
+                this.phase = 'rocket';
+                this.particles = [];
+            }
+
+            update() {
+                if (this.phase === 'rocket') {
+                    this.rVel.y += params.gravity;
+                    this.rVel.x += params.wind * 0.008;
+                    this.rPos.add(this.rVel);
+
+                    this.rTrail.push(this.rPos.copy());
+                    if (this.rTrail.length > 18) this.rTrail.shift();
+
+                    if (this.rVel.y >= 0) {
+                        this.explode();
+                    }
+                } else if (this.phase === 'burst') {
+                    for (let p of this.particles) {
+                        p.vy += params.gravity * p.gravityMul;
+                        p.vx += params.wind * 0.004;
+                        p.vx *= p.drag;
+                        p.vy *= p.drag;
+                        p.x += p.vx;
+                        p.y += p.vy;
+
+                        p.trail.push({ x: p.x, y: p.y });
+                        if (p.trail.length > p.trailLen) p.trail.shift();
+
+                        p.life--;
+                    }
+                    this.particles = this.particles.filter(p => p.life > 0);
+                    if (this.particles.length === 0) this.phase = 'done';
+                }
+            }
+
+            explode() {
+                this.phase = 'burst';
+                let n = Math.floor(params.burstSize * this.sizeMul);
+                let cx = this.rPos.x;
+                let cy = this.rPos.y;
+                let rng = this.rng;
+                let rgb = hexToRgb(this.burstColor);
+
+                switch (this.burstType) {
+                    case 0: this._peony(n, cx, cy, rng, rgb); break;
+                    case 1: this._chrysanthemum(n, cx, cy, rng, rgb); break;
+                    case 2: this._willow(n, cx, cy, rng, rgb); break;
+                    case 3: this._ring(n, cx, cy, rng, rgb); break;
+                    case 4: this._starburst(n, cx, cy, rng, rgb); break;
+                }
+
+                // Center flash
+                for (let i = 0; i < 15; i++) {
+                    let a = rng() * TWO_PI;
+                    let sp = rng() * 1.8;
+                    this._addParticle(cx, cy, Math.cos(a)*sp, Math.sin(a)*sp,
+                        {r:255,g:255,b:255}, 8 + Math.floor(rng()*12), 8 + Math.floor(rng()*12),
+                        0.94, 3, 1.0);
+                }
+            }
+
+            _peony(n, cx, cy, rng, rgb) {
+                for (let i = 0; i < n; i++) {
+                    let a = rng() * TWO_PI;
+                    let sp = 1.5 + rng() * 4.5;
+                    let life = 40 + Math.floor(rng() * 50);
+                    this._addParticle(cx, cy, Math.cos(a)*sp, Math.sin(a)*sp,
+                        rgb, life, life, 0.975, 6, 1.0);
+                }
+            }
+
+            _chrysanthemum(n, cx, cy, rng, rgb) {
+                for (let i = 0; i < n; i++) {
+                    let a = rng() * TWO_PI;
+                    let sp = 2 + rng() * 5.5;
+                    let life = 60 + Math.floor(rng() * 60);
+                    this._addParticle(cx, cy, Math.cos(a)*sp, Math.sin(a)*sp,
+                        rgb, life, life, 0.986, 14, 1.0);
+                }
+            }
+
+            _willow(n, cx, cy, rng, rgb) {
+                // Warm the color toward gold
+                let wr = Math.min(255, Math.floor(rgb.r * 0.5 + 255 * 0.5));
+                let wg = Math.min(255, Math.floor(rgb.g * 0.5 + 210 * 0.5));
+                let wb = Math.min(255, Math.floor(rgb.b * 0.3 + 80 * 0.7));
+                let warmRgb = { r: wr, g: wg, b: wb };
+
+                for (let i = 0; i < n; i++) {
+                    let a = rng() * TWO_PI;
+                    let sp = 2.5 + rng() * 4;
+                    let life = 90 + Math.floor(rng() * 70);
+                    this._addParticle(cx, cy, Math.cos(a)*sp, Math.sin(a)*sp,
+                        warmRgb, life, life, 0.992, 12, 1.5);
+                }
+            }
+
+            _ring(n, cx, cy, rng, rgb) {
+                for (let i = 0; i < n; i++) {
+                    let a = (i / n) * TWO_PI + (rng() - 0.5) * 0.06;
+                    let sp = 3.2 + rng() * 0.6;
+                    let life = 30 + Math.floor(rng() * 30);
+                    this._addParticle(cx, cy, Math.cos(a)*sp, Math.sin(a)*sp,
+                        rgb, life, life, 0.97, 5, 1.0);
+                }
+            }
+
+            _starburst(n, cx, cy, rng, rgb) {
+                let pts = 5 + Math.floor(rng() * 4);
+                for (let i = 0; i < n; i++) {
+                    let sector = Math.floor(rng() * pts);
+                    let baseA = (sector / pts) * TWO_PI;
+                    let spread = (rng() - 0.5) * 0.35;
+                    let a = baseA + spread;
+                    let sp = 2 + rng() * 5;
+                    let life = 35 + Math.floor(rng() * 45);
+                    this._addParticle(cx, cy, Math.cos(a)*sp, Math.sin(a)*sp,
+                        rgb, life, life, 0.976, 7, 1.0);
+                }
+            }
+
+            _addParticle(x, y, vx, vy, col, life, maxLife, drag, trailLen, gravityMul) {
+                this.particles.push({
+                    x, y, vx, vy,
+                    cr: col.r, cg: col.g, cb: col.b,
+                    life, maxLife, drag, trailLen, gravityMul,
+                    trail: []
+                });
+            }
+
+            display() {
+                noStroke();
+                if (this.phase === 'rocket') {
+                    let rgb = hexToRgb(this.burstColor);
+                    // Rocket trail
+                    for (let i = 0; i < this.rTrail.length; i++) {
+                        let t = i / this.rTrail.length;
+                        fill(255, 200, 100, t * 140);
+                        circle(this.rTrail[i].x, this.rTrail[i].y, t * 2.5);
+                    }
+                    // Rocket head
+                    fill(rgb.r, rgb.g, rgb.b, 220);
+                    circle(this.rPos.x, this.rPos.y, 4);
+                    fill(255, 255, 255, 250);
+                    circle(this.rPos.x, this.rPos.y, 2);
+                } else if (this.phase === 'burst') {
+                    for (let p of this.particles) {
+                        let lr = p.life / p.maxLife;
+                        let alpha = lr * 255;
+
+                        // Trail
+                        for (let i = 0; i < p.trail.length; i++) {
+                            let t = i / p.trail.length;
+                            fill(p.cr, p.cg, p.cb, alpha * t * 0.4);
+                            circle(p.trail[i].x, p.trail[i].y, t * 2.2);
+                        }
+
+                        // Particle body
+                        fill(p.cr, p.cg, p.cb, alpha);
+                        let sz = lr > 0.5 ? 3.2 : 1.5 + lr * 3.4;
+                        circle(p.x, p.y, sz);
+
+                        // White-hot glow for young particles
+                        if (lr > 0.6) {
+                            fill(255, 255, 255, alpha * 0.55);
+                            circle(p.x, p.y, 1.8);
+                        }
+                    }
+                }
+            }
+
+            isDone() {
+                return this.phase === 'done';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // UI HANDLERS
+        // ═══════════════════════════════════════════════════════════════
+        function updateParam(name, value) {
+            let v = parseFloat(value);
+            params[name] = v;
+            document.getElementById(name + '-value').textContent = v;
+            initializeSystem();
+        }
+
+        function updateColor(index, value) {
+            params.colorPalette[index] = value;
+            document.getElementById('color' + (index + 1) + '-value').textContent = value;
+            initializeSystem();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // SEED CONTROLS (FIXED)
+        // ═══════════════════════════════════════════════════════════════
+        function updateSeedDisplay() {
+            document.getElementById('seed-input').value = params.seed;
+        }
+
+        function updateSeed() {
+            let v = parseInt(document.getElementById('seed-input').value);
+            if (v && v > 0) {
+                params.seed = v;
+                initializeSystem();
+            } else {
+                updateSeedDisplay();
+            }
+        }
+
+        function previousSeed() {
+            params.seed = Math.max(1, params.seed - 1);
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function nextSeed() {
+            params.seed++;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function randomSeedAndUpdate() {
+            params.seed = Math.floor(Math.random() * 999999) + 1;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function resetParameters() {
+            params = JSON.parse(JSON.stringify(defaultParams));
+            // Sync UI
+            document.getElementById('launchRate').value = params.launchRate;
+            document.getElementById('launchRate-value').textContent = params.launchRate;
+            document.getElementById('burstSize').value = params.burstSize;
+            document.getElementById('burstSize-value').textContent = params.burstSize;
+            document.getElementById('gravity').value = params.gravity;
+            document.getElementById('gravity-value').textContent = params.gravity;
+            document.getElementById('trailFade').value = params.trailFade;
+            document.getElementById('trailFade-value').textContent = params.trailFade;
+            document.getElementById('wind').value = params.wind;
+            document.getElementById('wind-value').textContent = params.wind;
+            for (let i = 0; i < params.colorPalette.length; i++) {
+                document.getElementById('color' + (i + 1)).value = params.colorPalette[i];
+                document.getElementById('color' + (i + 1) + '-value').textContent = params.colorPalette[i];
+            }
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function downloadPNG() {
+            saveCanvas('ephemeral-radiance-' + params.seed, 'png');
+        }
+
+        window.addEventListener('load', function() {
+            updateSeedDisplay();
+        });
+    </script>
+</body>
+</html>

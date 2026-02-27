@@ -1,25 +1,22 @@
-# skills-book-examples
+# Agent Skills入門 サポートサイト
 
-「Agent Skills入門」書籍のサンプルスキル集です。
+「Agent Skills入門」で使用するサンプルデータ・コードです。
 
-## スキル一覧
-
-| スキル | 概要 | 登場章 |
-|--------|------|--------|
-| [weekly-report](./weekly-report/) | 製造業向け週報（グラフ付きHTMLレポート） | 第3章 |
-
-## インストール方法
+## 使い方
 
 ```bash
 git clone https://github.com/nobita2041/skills-book-examples.git
-cp -r skills-book-examples/weekly-report ~/.claude/skills/
 ```
 
-インストール後、Claude Codeを再起動してください。
+## 構成
 
-```bash
-/exit
-claude
-```
-
-`/skills` コマンドで `weekly-report` が表示されればインストール完了です。
+| ディレクトリ | 章 | 内容 |
+|---|---|---|
+| weekly-report/ | 第3章 3.3 | 製造週報スキルのサンプル |
+| frontend-design/ | 第4章 4.1 | フロントエンドデザインのサンプル |
+| theme-factory/ | 第4章 4.2 | テーマ適用のサンプル |
+| canvas-design/ | 第4章 4.3 | Canvas デザインのサンプル |
+| brand-guidelines/ | 第4章 4.4 | ブランドガイドラインのサンプル |
+| algorithmic-art/ | 第4章 4.5 | アルゴリズミックアートのサンプル |
+| slack-gif-creator/ | 第4章 4.6 | Slack GIFのサンプル |
+| pdf/ | 第5章 5.1 | 月次売上CSVデータ |

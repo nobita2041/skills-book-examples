@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Overview - AI Assistant Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --dark: #141413;
+      --light: #faf9f5;
+      --mid-gray: #b0aea5;
+      --light-gray: #e8e6dc;
+      --orange: #d97757;
+      --blue: #6a9bcc;
+      --green: #788c5d;
+    }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', Arial, sans-serif;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    /* ── Header ── */
+    .header {
+      background-color: var(--dark);
+      color: var(--light);
+      padding: 3rem 2rem;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .header-label {
+      font-family: 'Poppins', Arial, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.75rem;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      color: var(--mid-gray);
+      max-width: 640px;
+    }
+
+    /* ── Main ── */
+    .main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--light-gray);
+    }
+
+    .section p {
+      margin-bottom: 1rem;
+    }
+
+    /* ── Metrics Row ── */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+
+    .metric-card {
+      background: #fff;
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-family: 'Poppins', Arial, sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .metric-value.orange { color: var(--orange); }
+    .metric-value.blue   { color: var(--blue); }
+    .metric-value.green  { color: var(--green); }
+
+    .metric-label {
+      font-size: 0.9rem;
+      color: var(--mid-gray);
+      margin-top: 0.25rem;
+    }
+
+    /* ── Timeline ── */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--light-gray);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.75rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--orange);
+      background: var(--light);
+    }
+
+    .timeline-item.done::before {
+      background: var(--orange);
+    }
+
+    .timeline-date {
+      font-family: 'Poppins', Arial, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--mid-gray);
+      margin-bottom: 0.15rem;
+    }
+
+    .timeline-title {
+      font-family: 'Poppins', Arial, sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-desc {
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    /* ── Team ── */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .team-card {
+      background: #fff;
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .team-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', Arial, sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--light);
+      flex-shrink: 0;
+    }
+
+    .team-name {
+      font-family: 'Poppins', Arial, sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .team-role {
+      font-size: 0.85rem;
+      color: var(--mid-gray);
+    }
+
+    /* ── Stack ── */
+    .stack-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      list-style: none;
+    }
+
+    .stack-list li {
+      font-family: 'Poppins', Arial, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      background: var(--light-gray);
+      color: var(--dark);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem;
+      border-top: 1px solid var(--light-gray);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--mid-gray);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-label">Project Overview</div>
+      <h1>AI Assistant Platform</h1>
+      <p>社内業務を効率化するAIアシスタント基盤の構築プロジェクト。自然言語による問い合わせ対応と業務フロー自動化を実現します。</p>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Metrics -->
+    <div class="metrics">
+      <div class="metric-card">
+        <div class="metric-value orange">78%</div>
+        <div class="metric-label">進捗率</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value blue">12</div>
+        <div class="metric-label">チームメンバー</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value green">Q2 2026</div>
+        <div class="metric-label">リリース予定</div>
+      </div>
+    </div>
+
+    <!-- Background -->
+    <section class="section">
+      <h2>背景と目的</h2>
+      <p>社内の問い合わせ対応は年間約12,000件に達し、その大半が定型的な質問です。対応コストの削減と従業員体験の向上を目的として、AIアシスタント基盤を構築します。</p>
+      <p>本プロジェクトでは、社内ナレッジベースと連携したRAGアーキテクチャを採用し、部門横断で利用可能な統一プラットフォームを提供します。</p>
+    </section>
+
+    <!-- Timeline -->
+    <section class="section">
+      <h2>マイルストーン</h2>
+      <div class="timeline">
+        <div class="timeline-item done">
+          <div class="timeline-date">2025年10月</div>
+          <div class="timeline-title">要件定義・技術選定</div>
+          <div class="timeline-desc">ユーザーヒアリングとPoC実施。アーキテクチャ決定。</div>
+        </div>
+        <div class="timeline-item done">
+          <div class="timeline-date">2025年12月</div>
+          <div class="timeline-title">基盤構築</div>
+          <div class="timeline-desc">APIサーバー、ベクトルDB、認証基盤の構築完了。</div>
+        </div>
+        <div class="timeline-item done">
+          <div class="timeline-date">2026年2月</div>
+          <div class="timeline-title">社内ベータリリース</div>
+          <div class="timeline-desc">IT部門・人事部門で先行運用を開始。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2026年4月</div>
+          <div class="timeline-title">全社展開</div>
+          <div class="timeline-desc">フィードバック反映後、全部門へ展開。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2026年6月</div>
+          <div class="timeline-title">外部連携・拡張</div>
+          <div class="timeline-desc">Slack/Teams連携、ワークフロー自動化の追加。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section class="section">
+      <h2>プロジェクトチーム</h2>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar" style="background:var(--orange)">TY</div>
+          <div>
+            <div class="team-name">田中 裕子</div>
+            <div class="team-role">プロジェクトマネージャー</div>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:var(--blue)">SK</div>
+          <div>
+            <div class="team-name">鈴木 健太</div>
+            <div class="team-role">テックリード</div>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:var(--green)">WM</div>
+          <div>
+            <div class="team-name">渡辺 真理</div>
+            <div class="team-role">MLエンジニア</div>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:var(--mid-gray)">KA</div>
+          <div>
+            <div class="team-name">加藤 明</div>
+            <div class="team-role">フロントエンド</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="section">
+      <h2>技術スタック</h2>
+      <ul class="stack-list">
+        <li>Python</li>
+        <li>FastAPI</li>
+        <li>React</li>
+        <li>TypeScript</li>
+        <li>PostgreSQL</li>
+        <li>Pinecone</li>
+        <li>Claude API</li>
+        <li>Docker</li>
+        <li>AWS</li>
+        <li>Terraform</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    AI Assistant Platform &mdash; Internal Project 2025&ndash;2026
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!-- sample.html — Stripe Fintech Theme Applied -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>週次プロジェクトレポート</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Stripe Fintech Theme ── */
+    :root {
+      --stripe-violet: #635BFF;
+      --stripe-violet-dark: #4F46E5;
+      --deep-navy: #0A2540;
+      --sky-cyan: #00D4FF;
+      --light-surface: #F6F9FC;
+      --slate: #425466;
+      --white: #FFFFFF;
+      --border: #E3E8EF;
+      --gradient: linear-gradient(135deg, #635BFF 0%, #00D4FF 100%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--light-surface);
+      color: var(--deep-navy);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Header bar ── */
+    header {
+      background: var(--deep-navy);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.3px;
+    }
+
+    .badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--sky-cyan);
+      border: 1px solid rgba(0, 212, 255, 0.35);
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.4px;
+    }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 780px;
+      margin: 56px auto;
+      padding: 0 24px;
+    }
+
+    /* ── Hero banner ── */
+    .hero {
+      background: var(--deep-navy);
+      border-radius: 20px;
+      padding: 52px 48px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(99,91,255,0.45) 0%, transparent 70%);
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      left: 30%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(0,212,255,0.25) 0%, transparent 70%);
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.6px;
+      line-height: 1.25;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 span {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .meta {
+      margin-top: 16px;
+      display: flex;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-item {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.55);
+      font-weight: 400;
+    }
+
+    .meta-item strong {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+    }
+
+    /* ── Section card ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(10, 37, 64, 0.06), 0 4px 16px rgba(10, 37, 64, 0.04);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 2px 8px rgba(10, 37, 64, 0.1), 0 8px 32px rgba(10, 37, 64, 0.07);
+    }
+
+    /* ── Section header ── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--stripe-violet);
+      margin-bottom: 12px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--stripe-violet);
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--deep-navy);
+      letter-spacing: -0.3px;
+      margin-bottom: 16px;
+      line-height: 1.35;
+    }
+
+    p {
+      font-size: 15px;
+      color: var(--slate);
+      line-height: 1.75;
+    }
+
+    /* ── Accent divider ── */
+    .accent-bar {
+      display: block;
+      width: 40px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--gradient);
+      margin-bottom: 20px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      font-size: 13px;
+      color: var(--slate);
+    }
+
+    footer a {
+      color: var(--stripe-violet);
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="logo">ProjectHub</span>
+    <span class="badge">週次レポート</span>
+  </header>
+
+  <main>
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>週次プロジェクト<span>レポート</span></h1>
+      <div class="meta">
+        <span class="meta-item"><strong>期間：</strong>2026年2月第4週</span>
+        <span class="meta-item"><strong>ステータス：</strong>進行中</span>
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="card">
+      <span class="section-label">今週の成果</span>
+      <span class="accent-bar"></span>
+      <h2>進捗サマリー</h2>
+      <p>今週のスプリントでは、認証モジュールの実装を完了しました。</p>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="card">
+      <span class="section-label">次のステップ</span>
+      <span class="accent-bar"></span>
+      <h2>来週の計画</h2>
+      <p>APIインテグレーションのテストを開始します。</p>
+    </div>
+
+  </main>
+
+  <footer>
+    Stripe Fintech Theme &mdash; Theme Factory
+  </footer>
+
+</body>
+</html>
