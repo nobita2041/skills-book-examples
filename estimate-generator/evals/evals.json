@@ -1,0 +1,50 @@
+{
+  "skill_name": "estimate-generator",
+  "evals": [
+    {
+      "id": 1,
+      "name": "corporate-site",
+      "prompt": "ABCコーポレーション様向けにコーポレートサイト制作の見積書を作ってください。トップページ+下層5ページのデザインとコーディング、WordPress構築、お問い合わせフォームをお願いします。",
+      "expected_output": "9品目程度の見積書PDF。トップページデザイン/コーディング、下層ページデザイン/コーディング x5、WordPress基本構築、お問い合わせフォーム。消費税10%込みの合計金額が正しく算出されている。",
+      "files": [],
+      "assertions": [
+        {"name": "pdf_generated", "type": "file_exists", "description": "PDFファイルが出力されている"},
+        {"name": "client_name_correct", "type": "content_check", "description": "宛先がABCコーポレーションになっている"},
+        {"name": "company_info_correct", "type": "content_check", "description": "発行元が株式会社技術評論デザインになっている"},
+        {"name": "item_count_reasonable", "type": "range_check", "description": "品目数が7〜12の範囲（デザイン+コーディング+WP+フォーム）"},
+        {"name": "tax_calculation_correct", "type": "calculation_check", "description": "消費税10%の計算が正しい（合計 = 小計 × 1.10）"},
+        {"name": "single_page", "type": "format_check", "description": "見積書が1ページに収まっている"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "lp-and-video",
+      "prompt": "株式会社メディアプラス様向けにLP制作と動画制作の見積書をお願いします。LP1枚のデザイン・コーディングと、サービス紹介動画の撮影・編集を2本。",
+      "expected_output": "LP関連（デザイン・コーディング）と動画関連（撮影x2、編集x2）の見積書PDF。デフォルト単価テーブルの金額が使われている。",
+      "files": [],
+      "assertions": [
+        {"name": "pdf_generated", "type": "file_exists", "description": "PDFファイルが出力されている"},
+        {"name": "client_name_correct", "type": "content_check", "description": "宛先が株式会社メディアプラスになっている"},
+        {"name": "includes_lp_items", "type": "content_check", "description": "LP関連の品目（デザイン・コーディング）が含まれている"},
+        {"name": "includes_video_items", "type": "content_check", "description": "動画撮影・動画編集が品目に含まれている"},
+        {"name": "video_quantity_correct", "type": "value_check", "description": "動画撮影・編集の数量がそれぞれ2本になっている"},
+        {"name": "tax_calculation_correct", "type": "calculation_check", "description": "消費税10%の計算が正しい"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "custom-items",
+      "prompt": "有限会社山田工務店さんの見積もりを出して。WordPressでブログ付きのサイトを作る。ページ数はトップ+下層3ページ。あと多言語対応（英語）もお願いしたい。",
+      "expected_output": "WordPress構築、ブログ機能、トップページ+下層3ページのデザイン・コーディング。多言語対応はデフォルト単価テーブルにないため、ユーザーに金額を確認するやり取りが発生する。",
+      "files": [],
+      "assertions": [
+        {"name": "pdf_generated", "type": "file_exists", "description": "PDFファイルが出力されている"},
+        {"name": "client_name_correct", "type": "content_check", "description": "宛先が有限会社山田工務店になっている"},
+        {"name": "includes_wordpress", "type": "content_check", "description": "WordPress基本構築が品目に含まれている"},
+        {"name": "includes_blog", "type": "content_check", "description": "ブログ機能が品目に含まれている"},
+        {"name": "includes_multilang", "type": "content_check", "description": "多言語対応が品目に含まれている"},
+        {"name": "tax_calculation_correct", "type": "calculation_check", "description": "消費税10%の計算が正しい"}
+      ]
+    }
+  ]
+}
